@@ -49,6 +49,11 @@ namespace UnitTests
         {
             string response = SendCommand("COUNT");
             Assert.AreEqual(response, "ERROR: HANDSHAKE REQUIRED");
+
+            response = SendCommand("HELO");
+            Assert.AreEqual(response, "HI");
+            response = SendCommand("TERMINATE");
+            Assert.AreEqual(response, "BYE");
         }
 
         [TestMethod]
@@ -58,6 +63,9 @@ namespace UnitTests
             Assert.AreEqual(response, "HI");
             response = SendCommand("BLABLABLA");
             Assert.AreEqual(response, "INVALID COMMAND");
+
+            response = SendCommand("TERMINATE");
+            Assert.AreEqual(response, "BYE");
         }
 
         [TestMethod]
@@ -65,6 +73,9 @@ namespace UnitTests
         {
             String response = SendCommand("HELO");  // with a single 'L' in the specs
             Assert.AreEqual(response, "HI");
+
+            response = SendCommand("TERMINATE");
+            Assert.AreEqual(response, "BYE");
         }
 
         [TestMethod]
@@ -80,6 +91,24 @@ namespace UnitTests
             response = SendCommand("COUNT");
             int nextCount = int.Parse(response);
             Assert.AreEqual(initCount+1, nextCount);
+
+            response = SendCommand("TERMINATE");
+            Assert.AreEqual(response, "BYE");
+        }
+
+        [TestMethod]
+        public void Connections()
+        {
+            string response = SendCommand("HELO");
+            Assert.AreEqual(response, "HI");
+
+            response = SendCommand("CONNECTIONS");
+            int connCount = int.Parse(response);
+
+            Assert.AreEqual(1, connCount);
+
+            response = SendCommand("TERMINATE");
+            Assert.AreEqual(response, "BYE");
         }
     }
 }

@@ -57,6 +57,14 @@ namespace TCPServer
                 case "COUNT":
                     SendReply(server.GetHandshakeCount().ToString(), clientStream);
                     break;
+                case "CONNECTIONS":
+                    SendReply(server.GetConnectionCount().ToString(), clientStream);
+                    break;
+                case "TERMINATE":
+                    server.ConnectionClosed();
+                    done = true;
+                    SendReply("BYE", clientStream);
+                    break;
                 default:
                     SendReply("INVALID COMMAND", clientStream);
                     break;
@@ -77,6 +85,7 @@ namespace TCPServer
 
             NetworkStream clStream = client.GetStream();
 
+            bool retrying = false;
             while (!done)
             {
                 int bytesRead;
@@ -86,7 +95,15 @@ namespace TCPServer
                 }
                 catch (Exception e)
                 {
-                    //retry
+                    if (!retrying)
+                    {
+                        // retry once
+                        retrying = true;
+                    } else
+                    {
+                        // connection lost
+                        done = true;
+                    }
                     continue;
                 }
 

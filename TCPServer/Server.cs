@@ -15,7 +15,8 @@ namespace TCPServer
         private TcpListener listener;
 
         // server state: counters
-        private int handshakeCount;
+        private int handshakeCount = 0;
+        private int connectionCount = 0;
 
         public void Handshake()
         {
@@ -25,6 +26,16 @@ namespace TCPServer
         public int GetHandshakeCount()
         {
             return handshakeCount;
+        }
+
+        public int GetConnectionCount()
+        {
+            return connectionCount;
+        }
+
+        public void ConnectionClosed()
+        {
+            Interlocked.Decrement(ref connectionCount);
         }
 
         protected void StartSession(TcpClient client)
@@ -44,6 +55,7 @@ namespace TCPServer
                     try
                     {
                         TcpClient client = listener.AcceptTcpClient();
+                        Interlocked.Increment(ref connectionCount);
                         StartSession(client);
                     }
                     catch (Exception e)
