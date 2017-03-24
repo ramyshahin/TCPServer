@@ -60,6 +60,9 @@ namespace TCPServer
                 case "CONNECTIONS":
                     SendReply(server.GetConnectionCount().ToString(), clientStream);
                     break;
+                case "PRIME":
+                    SendReply(PrimeGenerator.GetRandomPrime().ToString(), clientStream);
+                    break;
                 case "TERMINATE":
                     server.ConnectionClosed();
                     done = true;

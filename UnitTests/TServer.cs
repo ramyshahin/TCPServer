@@ -110,5 +110,43 @@ namespace UnitTests
             response = SendCommand("TERMINATE");
             Assert.AreEqual(response, "BYE");
         }
+
+        protected static bool isPrime(int num)
+        {
+            if (num < 2)
+            {
+                return false;
+            }
+
+            int d = 2;
+            while (d * d <= num)
+            {
+                if (num % d == 0)
+                {
+                    return false;
+                }
+
+                d++;
+            }
+
+            return true;
+        }
+
+        [TestMethod]
+        public void Prime()
+        {
+            client.ReceiveTimeout = 0; // disable connection timeout
+
+            string response = SendCommand("HELO");
+            Assert.AreEqual(response, "HI");
+
+            response = SendCommand("PRIME");
+            int num = int.Parse(response);
+
+            Assert.IsTrue(isPrime(num));
+
+            response = SendCommand("TERMINATE");
+            Assert.AreEqual(response, "BYE");
+        }
     }
 }
