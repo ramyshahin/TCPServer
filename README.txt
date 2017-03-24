@@ -11,3 +11,5 @@ Design Decisions:
   synchronization primitives (e.g. a mutex)
 - Server functionality is decoupled from client-specific session handling (implemented in the
   Session class)
+- Each session is launched as an aynchronous task (on a threadpool). This makes the server both
+  more responsive and more scalable to concurrent traffic.

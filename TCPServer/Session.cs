@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
@@ -71,7 +69,7 @@ namespace TCPServer
             clientStream.Write(bytes, 0, bytes.Length);
         }
 
-        public async Task Start()
+        public void Start()
         {
             // longest client command is 11 characters (22 bytes long)
             const int BUF_SIZE = 32;
@@ -79,7 +77,6 @@ namespace TCPServer
 
             NetworkStream clStream = client.GetStream();
 
-            Console.WriteLine("Session started");
             while (!done)
             {
                 int bytesRead;
@@ -89,8 +86,7 @@ namespace TCPServer
                 }
                 catch (Exception e)
                 {
-                    //Console.WriteLine("Failed to read from client stream");
-                    //client.Close();
+                    //retry
                     continue;
                 }
 

@@ -27,28 +27,10 @@ namespace TCPServer
             return handshakeCount;
         }
 
-        protected async Task StartSession(TcpClient client)
+        protected void StartSession(TcpClient client)
         {
             Session session = new Session(client, this);
             Task.Run(() => session.Start());
-        }
-
-        protected async void ServerLoop()
-        {
-            while (true)
-            {
-                Console.WriteLine("starting");
-                try
-                {
-                    TcpClient client = listener.AcceptTcpClient();
-                    await StartSession(client);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Exception: " + e);
-                }
-                Console.WriteLine("---");
-            } // while
         }
 
         public void Start()
@@ -57,7 +39,18 @@ namespace TCPServer
             try {
                 listener.Start();
 
-                ServerLoop();
+                while (true)
+                {
+                    try
+                    {
+                        TcpClient client = listener.AcceptTcpClient();
+                        StartSession(client);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Exception: " + e);
+                    }
+                } // while
             } catch (Exception e) {
                 Console.WriteLine("Exception: " + e);
             } finally {
